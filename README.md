@@ -56,7 +56,6 @@ shl2/
 ├── generate_predictions.py  # Batch prediction generator
 ├── evaluate.py              # Evaluation script
 │
-├── docs/                    # Documentation files
 ├── data/                    # Data files (catalogs, indexes)
 ├── assets/                  # Static assets (logos)
 ├── tests/                   # Unit tests
@@ -87,18 +86,18 @@ shl2/
    ```
 
 4. **Prepare the data**
-   - Place `shl_catalogue.xlsx` in the project root
+   - Place `shl_catalogue.xlsx` in `data/` folder
    - Run the data loader:
      ```bash
      python data_loader.py
      ```
-   - This creates `shl_catalog_cleaned.csv`
+   - This creates `data/shl_catalog_cleaned.csv`
 
 5. **Generate embeddings**
    ```bash
    python embedder.py
    ```
-   - This creates `shl_index.faiss` and `shl_index.pkl`
+   - This creates `data/shl_index.faiss` and `data/shl_index.pkl`
 
 ## 📖 Usage
 
@@ -109,9 +108,10 @@ python data_loader.py
 ```
 
 This script:
-- Loads `shl_catalogue.xlsx`
+- Loads `data/shl_catalogue.xlsx`
 - Cleans and standardizes the data
-- Saves to `shl_catalog_cleaned.csv`
+- Filters out "Pre-packaged Job Solutions"
+- Saves to `data/shl_catalog_cleaned.csv`
 
 ### 2. Embedding Generation
 
@@ -120,10 +120,10 @@ python embedder.py
 ```
 
 This script:
-- Loads cleaned catalog
+- Loads cleaned catalog from `data/shl_catalog_cleaned.csv`
 - Generates Gemini embeddings for each assessment
-- Builds FAISS index
-- Saves index and metadata
+- Builds FAISS index with L2 normalization
+- Saves index (`data/shl_index.faiss`) and metadata (`data/shl_index.pkl`)
 
 ### 3. Run the API Server (Recommended - Required for App)
 
@@ -171,29 +171,43 @@ python generate_predictions.py
 ```
 
 This script:
-- Loads test queries from `test_queries.csv`
-- Generates recommendations for each query
+- Loads test queries from `data/test_queries.csv` or `data/unlabeled_test_set.xlsx`
+- Generates recommendations for each query using the recommender
 - Saves to `predictions.csv` with format: `Query, Assessment_url`
+
+### 6. Evaluate Performance (Optional)
+
+```bash
+python evaluate.py --gold labeled_test.csv --k 10
+```
+
+This calculates Mean Recall@10 on labeled test data.
 
 ## 📁 Project Structure
 
 ```
 shl2/
-├── data_loader.py          # Load and clean catalog data
-├── embedder.py             # Generate embeddings and build FAISS index
-├── recommender.py          # Core recommendation logic
-├── api.py                  # FastAPI backend
-├── app.py                  # Streamlit UI
-├── generate_predictions.py # Batch prediction generator
-├── requirements.txt        # Python dependencies
-├── README.md               # This file
-├── .env                    # Environment variables (create this)
-├── .gitignore              # Git ignore rules
-├── shl_catalogue.xlsx     # Input catalog file (provided)
-├── shl_catalog_cleaned.csv # Cleaned catalog (generated)
-├── shl_index.faiss         # FAISS index (generated)
-├── shl_index.pkl           # Metadata (generated)
-└── predictions.csv         # Output predictions (generated)
+├── api.py                   # FastAPI backend
+├── app.py                   # Streamlit UI
+├── recommender.py           # Core recommendation logic
+├── embedder.py              # Generate embeddings and build FAISS index
+├── data_loader.py           # Load and clean catalog data
+├── generate_predictions.py  # Batch prediction generator
+├── evaluate.py              # Evaluation script
+├── requirements.txt         # Python dependencies
+├── README.md                # This file
+├── .env.example             # Environment variables template
+├── .gitignore               # Git ignore rules
+├── data/                    # Data directory
+│   ├── shl_catalogue.xlsx          # Input catalog file
+│   ├── shl_catalog_cleaned.csv     # Cleaned catalog (generated)
+│   ├── shl_index.faiss             # FAISS index (generated)
+│   ├── shl_index.pkl               # Metadata (generated)
+│   └── test_queries.csv            # Test queries (optional)
+├── assets/                  # Static assets (logos)
+│   └── shl_logo.png
+├── tests/                   # Unit tests
+└── predictions.csv          # Output predictions (generated)
 ```
 
 ## 🔧 Configuration
@@ -268,8 +282,6 @@ Query,Assessment_url
 
 ## 🚀 Deployment
 
-See `DEPLOYMENT_GUIDE.md` for comprehensive deployment instructions.
-
 ### Quick Deployment Steps
 
 #### Deploy API to Render (Recommended - 5 minutes)
@@ -319,14 +331,16 @@ curl -X POST https://your-api-url.onrender.com/recommend \
 
 ## 📈 Evaluation
 
-The system uses semantic search with cosine similarity. To evaluate:
+The system uses semantic search with cosine similarity and LLM re-ranking. To evaluate:
 
-1. Prepare labeled test data
-2. Run `generate_predictions.py`
-3. Calculate metrics:
+1. Prepare labeled test data with columns: `Query`, `Relevant_URLs` (comma-separated)
+2. Run evaluation script:
+   ```bash
+   python evaluate.py --gold labeled_test.csv --k 10
+   ```
+3. Metrics calculated:
    - **Recall@10**: Percentage of relevant assessments found in top 10
-   - **Mean Reciprocal Rank (MRR)**: Average rank of first relevant result
-   - **Precision@K**: Percentage of relevant results in top K
+   - **Mean Recall@10**: Average Recall@10 across all test queries
 
 ## 🔍 How It Works
 
