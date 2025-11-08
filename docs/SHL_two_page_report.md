@@ -216,9 +216,9 @@ python evaluate.py --gold labeled_test.csv --k 10
 
 ### 7.1 Hosted URLs
 
-- **API Endpoint:** `[TBD - Deploy to Render/Heroku]`
+- **API Endpoint:** `https://shl-assessment-recommendation-system-rkiz.onrender.com`
 - **Streamlit App:** `[TBD - Deploy to Streamlit Cloud]`
-- **GitHub Repository:** `[TBD - Your GitHub URL]`
+- **GitHub Repository:** `https://github.com/02manishku/shl-assessment-recommendation-system.git`
 
 ### 7.2 Deployment Platforms
 
@@ -276,10 +276,10 @@ python evaluate.py --gold labeled_test.csv --k 10
 
 | Deliverable | Status | Location |
 |---|---|---|
-| GitHub Repository | ✅ Ready | `[Your GitHub URL]` |
-| API Endpoint | ⏳ Pending deployment | `[Render URL]` |
+| GitHub Repository | ✅ Ready | `https://github.com/02manishku/shl-assessment-recommendation-system.git` |
+| API Endpoint | ✅ Deployed | `https://shl-assessment-recommendation-system-rkiz.onrender.com` |
 | Streamlit App | ⏳ Pending deployment | `[Streamlit Cloud URL]` |
-| predictions.csv | ✅ Ready | Run `python generate_predictions.py` |
+| predictions.csv | ✅ Ready | `predictions.csv` (in repository root) |
 | Technical Report | ✅ Complete | This document |
 
 ---
