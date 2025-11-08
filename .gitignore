@@ -41,6 +41,9 @@ data/*.xlsx
 *.db
 # Keep predictions.csv in root (it's a deliverable)
 !predictions.csv
+# Keep FAISS index files for deployment (required for API)
+!data/shl_index.faiss
+!data/shl_index.pkl
 
 # IDE
 .vscode/
