@@ -2,7 +2,7 @@
 
 An intelligent web-based recommendation system that recommends the most relevant SHL Individual Test Solutions based on job descriptions or natural language queries using semantic search with vector embeddings.
 
-## 🎯 Features
+## Features
 
 - **Semantic Search**: Uses Gemini embeddings and FAISS for efficient similarity search
 - **REST API**: FastAPI backend with `/health` and `/recommend` endpoints
@@ -10,7 +10,7 @@ An intelligent web-based recommendation system that recommends the most relevant
 - **Batch Processing**: Generate predictions for multiple queries at once
 - **Type Balancing**: Automatically balances Knowledge (K) and Personality (P) test recommendations
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────┐
@@ -34,13 +34,13 @@ An intelligent web-based recommendation system that recommends the most relevant
 └────────┘  └────────┘
 ```
 
-## 📋 Prerequisites
+## Prerequisites
 
 - Python 3.10 or higher
 - Gemini API key (for embeddings)
 - SHL catalog Excel file (`data/shl_catalogue.xlsx`)
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 shl2/
@@ -62,7 +62,7 @@ shl2/
 └── predictions.csv          # Generated predictions
 ```
 
-## 🚀 Installation
+## Installation
 
 1. **Clone the repository**
    ```bash
@@ -99,7 +99,7 @@ shl2/
    ```
    - This creates `data/shl_index.faiss` and `data/shl_index.pkl`
 
-## 📖 Usage
+## Usage
 
 ### 1. Data Loading and Cleaning
 
@@ -183,7 +183,7 @@ python evaluate.py --gold labeled_test.csv --k 10
 
 This calculates Mean Recall@10 on labeled test data.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 shl2/
@@ -210,7 +210,7 @@ shl2/
 └── predictions.csv          # Output predictions (generated)
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -231,7 +231,7 @@ app.add_middleware(
 )
 ```
 
-## 🧪 Testing
+## Testing
 
 ### Test the API
 
@@ -253,7 +253,7 @@ python recommender.py
 
 This runs sample queries and displays recommendations.
 
-## 📊 Output Format
+## Output Format
 
 ### API Response
 
@@ -280,7 +280,7 @@ Query,Assessment_url
 "Looking for a data analyst","https://www.shl.com/..."
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Quick Deployment Steps
 
@@ -329,7 +329,7 @@ curl -X POST https://your-api-url.onrender.com/recommend \
 - **Streamlit can't connect:** Update API_URL in secrets to match Render URL
 - **Index files missing:** Upload to cloud storage or generate on startup
 
-## 📈 Evaluation
+## Evaluation
 
 The system uses semantic search with cosine similarity and LLM re-ranking. To evaluate:
 
@@ -342,7 +342,7 @@ The system uses semantic search with cosine similarity and LLM re-ranking. To ev
    - **Recall@10**: Percentage of relevant assessments found in top 10
    - **Mean Recall@10**: Average Recall@10 across all test queries
 
-## 🔍 How It Works
+## How It Works
 
 1. **Data Preparation**: Catalog is cleaned and standardized
 2. **Embedding Generation**: Each assessment description is converted to a vector embedding using Gemini
@@ -350,7 +350,7 @@ The system uses semantic search with cosine similarity and LLM re-ranking. To ev
 4. **Query Processing**: User queries are embedded and compared against catalog embeddings
 5. **Recommendation**: Top-K most similar assessments are returned using cosine similarity
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -367,15 +367,15 @@ The system uses semantic search with cosine similarity and LLM re-ranking. To ev
    - Check that API server is running
    - Verify API_URL in Streamlit app matches server address
 
-## 📝 License
+## License
 
 This project is part of an assignment for building an SHL Assessment Recommendation System.
 
-## 👥 Author
+## Author
 
 Built as part of the SHL Assessment Recommendation System assignment.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - SHL for the assessment catalog
 - Google Gemini for embedding capabilities
