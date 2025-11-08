@@ -21,6 +21,42 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Helper function to get environment variables (supports both .env and Streamlit secrets)
+def get_env_var(key: str, default: str = None) -> str:
+    """
+    Get environment variable, trying Streamlit secrets first, then os.getenv.
+    
+    Streamlit Cloud automatically makes secrets available as environment variables,
+    but we also check st.secrets for direct access.
+    
+    Args:
+        key: Environment variable key
+        default: Default value if not found
+        
+    Returns:
+        Environment variable value or default
+    """
+    # Try Streamlit secrets first (for Streamlit Cloud - recommended method)
+    try:
+        # st.secrets is a dictionary-like object in Streamlit Cloud
+        if hasattr(st, 'secrets'):
+            # Access secrets using dictionary syntax
+            secrets_dict = dict(st.secrets) if hasattr(st.secrets, '__iter__') else {}
+            if key in secrets_dict:
+                value = secrets_dict[key]
+                # Handle nested secrets (e.g., st.secrets["api"]["key"])
+                if isinstance(value, dict):
+                    # If it's a nested dict, return the first value or convert to string
+                    return str(value)
+                return str(value)
+    except (AttributeError, KeyError, TypeError):
+        # st.secrets not available or key not found, continue to os.getenv
+        pass
+    
+    # Fallback to os.getenv (works for both .env file and Streamlit Cloud env vars)
+    # Streamlit Cloud also injects secrets as environment variables automatically
+    return os.getenv(key, default)
+
 # Page configuration
 st.set_page_config(
     page_title="SHL Assessment Recommender",
@@ -210,7 +246,7 @@ def main():
         if use_api:
             api_url_input = st.text_input(
                 "API URL",
-                value=os.getenv("API_URL", "http://localhost:8000"),
+                value=get_env_var("API_URL", "http://localhost:8000"),
                 help="URL of the FastAPI backend. Make sure the API server is running."
             )
             # Store in session state to access later
@@ -318,7 +354,7 @@ def main():
             
             # Get API URL from session state or sidebar input
             if use_api:
-                api_url = st.session_state.get('api_url', os.getenv("API_URL", "http://localhost:8000"))
+                api_url = st.session_state.get('api_url', get_env_var("API_URL", "http://localhost:8000"))
             else:
                 api_url = None
             
